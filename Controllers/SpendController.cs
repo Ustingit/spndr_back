@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SpndRr.Data;
 using SpndRr.Models.Spends;
 
@@ -22,9 +24,10 @@ namespace SpndRr.Controllers
         #region outer API
 
         // GET: Spend/GetItems?page=1
-        public async Task<PaginationDto> GetItems(int page = 1, int countOnPage = 10)
+        [EnableCors("LocalApi")]
+        public async Task<string> GetItems(int page = 1, int countOnPage = 10)
         {
-	        var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage).ToListAsync();
+            var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage).ToListAsync();
 	        var count = await _context.Spend.CountAsync();
 
 	        var totalPages = (int)Math.Ceiling(count / (float)countOnPage);
@@ -34,7 +37,8 @@ namespace SpndRr.Controllers
 	        var prevPage = page > firstPage ? page - 1 : firstPage;
 	        var nextPage = page < lastPage ? page + 1 : lastPage;
 
-	        return new PaginationDto(entries, count, prevPage, nextPage);
+	        var dto = new PaginationDto(entries, count, prevPage, nextPage);
+            return JsonConvert.SerializeObject(dto);
         }
 
         public class PaginationDto
