@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SpndRr.Models.Spends
 {
@@ -15,6 +16,7 @@ namespace SpndRr.Models.Spends
 
 		[Required, Display(Name = "Тип")]
 		[EnumDataType(typeof(SpendType))]
+		[JsonProperty("highType")]
 		public SpendType Type { get; set; }
 
 		[Required, Display(Name = "Подтип")]

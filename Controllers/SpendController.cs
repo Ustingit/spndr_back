@@ -22,7 +22,7 @@ namespace SpndRr.Controllers
         #region outer API
 
         // GET: Spend/GetItems?page=1
-        public async Task<List<Spend>> GetItems(int page = 1, int countOnPage = 10)
+        public async Task<PaginationDto> GetItems(int page = 1, int countOnPage = 10)
         {
 	        var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage).ToListAsync();
 	        var count = await _context.Spend.CountAsync();
@@ -34,7 +34,29 @@ namespace SpndRr.Controllers
 	        var prevPage = page > firstPage ? page - 1 : firstPage;
 	        var nextPage = page < lastPage ? page + 1 : lastPage;
 
-	        return entries;
+	        return new PaginationDto(entries, count, prevPage, nextPage);
+        }
+
+        public class PaginationDto
+        {
+	        public PaginationDto(List<Spend> items, int total, int prevPage, int nextPage)
+	        {
+		        Data = items;
+		        HasData = items.Any();
+		        Total = total;
+		        PrevPage = prevPage;
+		        NextPage = nextPage;
+	        }
+
+            public int Total { get; set; }
+
+	        public int PrevPage { get; set; }
+
+	        public int NextPage { get; set; }
+
+            public bool HasData { get; set; }
+
+            public List<Spend> Data { get; set; }
         }
 
         #endregion
