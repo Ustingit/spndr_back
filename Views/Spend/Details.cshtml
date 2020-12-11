@@ -1,0 +1,56 @@
+﻿@using SpndRr.Models.Spends
+@model SpndRr.Models.Spends.Spend
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Spend</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Sum)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Sum)
+        </dd>
+        <dt class="col-sm-2">
+            @if (Model.Type == SpendType.Income)
+            {
+                <span>Доход</span>
+            }
+            else
+            {
+                <span>Расход</span>
+            }
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SubType)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SubType)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

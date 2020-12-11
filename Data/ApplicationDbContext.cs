@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SpndRr.Models.Spends;
 
 namespace SpndRr.Data
 {
@@ -12,5 +13,7 @@ namespace SpndRr.Data
 			: base(options)
 		{
 		}
+
+		public DbSet<SpndRr.Models.Spends.Spend> Spend { get; set; }
 	}
 }
