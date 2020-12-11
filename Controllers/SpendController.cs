@@ -19,6 +19,26 @@ namespace SpndRr.Controllers
             _context = context;
         }
 
+        #region outer API
+
+        // GET: Spend/GetItems?page=1
+        public async Task<List<Spend>> GetItems(int page = 1, int countOnPage = 10)
+        {
+	        var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage).ToListAsync();
+	        var count = await _context.Spend.CountAsync();
+
+	        var totalPages = (int)Math.Ceiling(count / (float)countOnPage);
+
+	        var firstPage = 1; // obviously
+	        var lastPage = totalPages;
+	        var prevPage = page > firstPage ? page - 1 : firstPage;
+	        var nextPage = page < lastPage ? page + 1 : lastPage;
+
+	        return entries;
+        }
+
+        #endregion
+
         // GET: Spend
         public async Task<IActionResult> Index()
         {
