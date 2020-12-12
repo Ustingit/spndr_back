@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SpndRr.Data;
+using SpndRr.Models.Common;
 using SpndRr.Models.Spends;
 
 namespace SpndRr.Controllers
@@ -27,7 +30,9 @@ namespace SpndRr.Controllers
         [EnableCors("LocalApi")]
         public async Task<string> GetItems(int page = 1, int countOnPage = 10)
         {
-            var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage).ToListAsync();
+            var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage)
+	            .OrderByDescending(x => x.Date)
+	            .ToListAsync();
 	        var count = await _context.Spend.CountAsync();
 
 	        var totalPages = (int)Math.Ceiling(count / (float)countOnPage);
@@ -39,6 +44,70 @@ namespace SpndRr.Controllers
 
 	        var dto = new PaginationDto(entries, count, prevPage, nextPage);
             return JsonConvert.SerializeObject(dto);
+        }
+
+        [EnableCors("LocalApi")]
+        [HttpPost]
+        public async Task<string> AddSpend()
+        {
+	        try
+	        {
+		        using StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
+		        var body = await reader.ReadToEndAsync();
+                
+		        var newSpend = JsonConvert.DeserializeObject<NewSpend>(body, new JsonSerializerSettings
+		        {
+			        NullValueHandling = NullValueHandling.Ignore
+		        });
+
+		        if (newSpend != null)
+		        {
+			        var spend = new Spend()
+			        {
+				        Date = DateTime.Now,
+				        Sum = newSpend.Sum,
+				        Type = newSpend.GetRealType(),
+				        SubType = newSpend.SubType,
+				        Comment = newSpend.Comment
+                };
+
+                    await _context.AddAsync(spend);
+			        await _context.SaveChangesAsync();
+
+			        var result = new { id = spend.Id };
+
+			        return JsonConvert.SerializeObject(ApiResponse.Sucessful(result));
+		        }
+	        }
+	        catch (Exception e)
+	        {
+		        return JsonConvert.SerializeObject(ApiResponse.NotSucessful());
+            }
+
+	        return JsonConvert.SerializeObject(ApiResponse.NotSucessful());
+        }
+
+        // GET: Spend/DeleteSpend?id=1
+        [EnableCors("LocalApi")]
+        [HttpDelete]
+        public async Task<string> DeleteSpend(int? id)
+        {
+	        if (id == null)
+	        {
+		        return JsonConvert.SerializeObject(ApiResponse.NotSucessful());
+	        }
+
+	        var spend = await _context.Spend
+		        .FirstOrDefaultAsync(m => m.Id == id);
+	        
+	        if (spend != null)
+	        {
+		        _context.Spend.Remove(spend);
+		        await _context.SaveChangesAsync();
+                return JsonConvert.SerializeObject(ApiResponse.Sucessful());
+            }
+
+	        return JsonConvert.SerializeObject(ApiResponse.NotSucessful());
         }
 
         public class PaginationDto
