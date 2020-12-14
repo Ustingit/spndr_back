@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SpndRr.Data;
+using SpndRr.DataSources;
 using SpndRr.Models.Common;
 using SpndRr.Models.Spends;
 
@@ -17,11 +18,14 @@ namespace SpndRr.Controllers
 {
     public class SpendController : Controller
     {
+        private const int FirstPage = 1; // obviously
         private readonly ApplicationDbContext _context;
+        private SubTypeDataSource subTypeSource;
 
         public SpendController(ApplicationDbContext context)
         {
             _context = context;
+            subTypeSource = new SubTypeDataSource(context);
         }
 
         #region outer API
@@ -30,20 +34,37 @@ namespace SpndRr.Controllers
         [EnableCors("LocalApi")]
         public async Task<string> GetItems(int page = 1, int countOnPage = 10)
         {
-            var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage)
-	            .OrderByDescending(x => x.Date)
-	            .ToListAsync();
+            var dto = await GetEntities(page, countOnPage);
+
+            return JsonConvert.SerializeObject(dto);
+        }
+
+        // GET: Spend/GetItems?page=1
+        [EnableCors("LocalApi")]
+        public async Task<string> GetStartingData(int page = 1, int countOnPage = 10)
+        {
+	        var dto = await GetEntities(page, countOnPage);
+
+	        var outcomeSubTypes = subTypeSource.GetOutcomes();
+	        var incomeSubTypes = subTypeSource.GetIncomes();
+
+            return JsonConvert.SerializeObject(dto);
+        }
+
+        private async Task<PaginationDto> GetEntities(int page, int countOnPage)
+        {
+	        var entries = await _context.Spend.Skip((page - 1) * countOnPage).Take(countOnPage)
+		        .OrderByDescending(x => x.Date)
+		        .ToListAsync();
 	        var count = await _context.Spend.CountAsync();
 
 	        var totalPages = (int)Math.Ceiling(count / (float)countOnPage);
 
-	        var firstPage = 1; // obviously
 	        var lastPage = totalPages;
-	        var prevPage = page > firstPage ? page - 1 : firstPage;
+	        var prevPage = page > FirstPage ? page - 1 : FirstPage;
 	        var nextPage = page < lastPage ? page + 1 : lastPage;
 
-	        var dto = new PaginationDto(entries, count, prevPage, nextPage);
-            return JsonConvert.SerializeObject(dto);
+	        return new PaginationDto(entries, count, prevPage, nextPage);
         }
 
         [EnableCors("LocalApi")]

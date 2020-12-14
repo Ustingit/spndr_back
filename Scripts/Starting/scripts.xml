@@ -1,0 +1,52 @@
+﻿<root>
+	<sql>
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (1, 'Зарплата')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (1, 'Возврат долга')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (1, 'Подарок')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (1, 'Доход от инвестиций')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (1, 'Депозит')
+	</sql>
+	<sql>
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Продукты')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Отдых')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Транспорт')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Одежда')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Коммунальные платежи')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Кредит')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Связь и интернет')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Долг')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Здоровье')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Налоги')
+
+		INSERT INTO [dbo].[SubType] (ParentType, [Name])
+		VALUES (0, 'Разное')
+	</sql>
+</root>
