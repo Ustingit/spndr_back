@@ -48,7 +48,9 @@ namespace SpndRr.Controllers
 	        var outcomeSubTypes = subTypeSource.GetOutcomes();
 	        var incomeSubTypes = subTypeSource.GetIncomes();
 
-            return JsonConvert.SerializeObject(dto);
+	        var startingData = new StartingData(dto, outcomeSubTypes, incomeSubTypes);
+
+            return JsonConvert.SerializeObject(startingData);
         }
 
         private async Task<PaginationDto> GetEntities(int page, int countOnPage)
@@ -100,7 +102,7 @@ namespace SpndRr.Controllers
 			        return JsonConvert.SerializeObject(ApiResponse.Sucessful(result));
 		        }
 	        }
-	        catch (Exception e)
+	        catch
 	        {
 		        return JsonConvert.SerializeObject(ApiResponse.NotSucessful());
             }
@@ -129,28 +131,6 @@ namespace SpndRr.Controllers
             }
 
 	        return JsonConvert.SerializeObject(ApiResponse.NotSucessful());
-        }
-
-        public class PaginationDto
-        {
-	        public PaginationDto(List<Spend> items, int total, int prevPage, int nextPage)
-	        {
-		        Data = items;
-		        HasData = items.Any();
-		        Total = total;
-		        PrevPage = prevPage;
-		        NextPage = nextPage;
-	        }
-
-            public int Total { get; set; }
-
-	        public int PrevPage { get; set; }
-
-	        public int NextPage { get; set; }
-
-            public bool HasData { get; set; }
-
-            public List<Spend> Data { get; set; }
         }
 
         #endregion
