@@ -23,8 +23,8 @@ namespace SpndRr.Models.Spends
 
 		[JsonProperty("highType")]
 		public string StringType => (Type == SpendType.Income) 
-			? "HIGH_LEVEL_TYPE_INCOME" 
-			: "HIGH_LEVEL_TYPE_COSTS";
+			? "INCOME"
+			: "COSTS";
 
 		[JsonProperty("concreteTypeId")]
 		[Required, Display(Name = "Подтип")]

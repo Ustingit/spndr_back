@@ -30,7 +30,7 @@ namespace SpndRr.Controllers
 
         #region outer API
 
-        // GET: Spend/GetItems?page=1
+        // GET: Spend/GetItems?page=1&countOnPage=10
         [EnableCors("LocalApi")]
         public async Task<string> GetItems(int page = 1, int countOnPage = 10)
         {

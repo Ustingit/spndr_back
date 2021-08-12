@@ -30,7 +30,7 @@ namespace SpndRr
 			services.AddCors(options =>
 			{
 				options.AddPolicy("LocalApi",
-					builder => builder.WithOrigins("http://localhost:8080")
+					builder => builder.WithOrigins("http://localhost:3000")
 						.AllowAnyHeader()
 						.AllowAnyMethod());
 			});
